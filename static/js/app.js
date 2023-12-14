@@ -43,11 +43,11 @@ function manageplot(selectedClick = 0) {
         let selector = d3.select("#selDataset");
         if (document.querySelector('#selDataset').hasChildNodes() == false) {              // Need to test if the dropdown does not already exist or it will append the full list at each selection again and again 
             Object.values(nameIdList).map(item => item).forEach(d => {
-                selector.append("option").attr("value", nameIdList.indexOf(d)).text(d); // Based on how the json data is structured (an object containing three arrays),
-            })
-        };                                                                        // the only thing linking the values across the arrays is their position in each array.
-        // We will then use the index position (indexValue) as way to select the matched
-        // data from the three arrays.
+                selector.append("option").attr("value", nameIdList.indexOf(d)).text(d);    // Based on how the json data is structured (an object containing three arrays),
+            })                                                                             // the only thing linking the values across the arrays is their position in each array. 
+        };                                                                                 // We will then use the index position (indexValue) as way to select the matched
+                                                                                           // data from the three arrays. 
+        
 
         // *****   Populates the demographic info box based on the menu selection   *****
         function demographics(indexValue) {
