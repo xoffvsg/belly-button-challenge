@@ -5,23 +5,18 @@
 const url = "https://2u-data-curriculum-team.s3.amazonaws.com/dataviz-classroom/v1.1/14-Interactive-Web-Visualizations/02-Homework/samples.json";
 
 
-// Tentative to create the lines with ids in the HTML code
-// let listMeta = d3.select(".panel-body");
-// listMeta.insertAdjacentElement('afterend', "<p> id='id' </p>");
-// listMeta.append("p").text(`id='ethnicity'>`);
-// listMeta.append("p").text(`id='gender'>`);
-// listMeta.append("p").text(`id='age'>`);
-// listMeta.append("p").text(`id='location'>`);
-// listMeta.append("p").text(`id='bbtype'>`);
-// listMeta.append("p").text(`id='wfreq'>`);
-
-// var elements = document.getElementsByClassName("panel-body");
-// // elements.insertAdjacentElement('afterend', "<p id="id" style="padding-left: 10px;"></p>");
-// var elem = document.createElement("p");
-// elem.id = 'id';
-// elem.innerHTML = 'Id';
-// document.body.insertBefore(elem,document.body.childNodes[0]);
-// console.log(elements);
+// Injection of new lines in the html code to create paragraphs in the "Demographic Info" box that will be dynamically populated later
+document.querySelector('#sample-metadata').insertAdjacentHTML(
+    'afterbegin',`
+    <p id="id" style="padding-left: 10px;"></p>
+    <p id='ethnicity' style="padding-left: 10px;"></p>
+    <p id='gender' style="padding-left: 10px;"></p>
+    <p id='location' style="padding-left: 10px;"></p>
+    <p id='age' style="padding-left: 10px;"></p>
+    <p id='bbtype' style="padding-left: 10px;"></p>
+    <p id='wfreq' style="padding-left: 10px;"></p>
+    `);      
+  
 
 // Creation of the Promise
 var dataCollected = d3.json(url);
@@ -48,11 +43,12 @@ function manageplot(selectedClick = 0) {
 
         // Need to test if the dropdown does not already exist or it will append the full list at each selection 
         let selector = d3.select("#selDataset");
-        Object.values(nameIdList).map(item => item).forEach(d => {
-            selector.append("option").attr("value", nameIdList.indexOf(d)).text(d);  // Based on how the json data is structured (a object containing three arrays),
-        });                                                                          // the only thing linking the values across the arrays is their position in each array.
-                                                                                     // We will then use the index position (indexValue) as way to select the matched
-                                                                                     // data from the three arrays.
+        if (document.querySelector('#selDataset').hasChildNodes()==false){
+            Object.values(nameIdList).map(item => item).forEach(d => {
+                selector.append("option").attr("value", nameIdList.indexOf(d)).text(d); // Based on how the json data is structured (an object containing three arrays),
+            })};                                                                        // the only thing linking the values across the arrays is their position in each array.
+                                                                                        // We will then use the index position (indexValue) as way to select the matched
+                                                                                        // data from the three arrays.
 
         // *****   Populates the demographic info box based on the menu selection   *****
         function demographics(indexValue) { 
