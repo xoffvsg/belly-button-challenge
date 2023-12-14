@@ -7,7 +7,7 @@ const url = "https://2u-data-curriculum-team.s3.amazonaws.com/dataviz-classroom/
 
 // Injection of new lines in the html code to create paragraphs in the "Demographic Info" box that will be dynamically populated later
 document.querySelector('#sample-metadata').insertAdjacentHTML(
-    'afterbegin',`
+    'afterbegin', `
     <p id="id" style="padding-left: 10px;"></p>
     <p id='ethnicity' style="padding-left: 10px;"></p>
     <p id='gender' style="padding-left: 10px;"></p>
@@ -15,8 +15,8 @@ document.querySelector('#sample-metadata').insertAdjacentHTML(
     <p id='age' style="padding-left: 10px;"></p>
     <p id='bbtype' style="padding-left: 10px;"></p>
     <p id='wfreq' style="padding-left: 10px;"></p>
-    `);      
-  
+    `);
+
 
 // Creation of the Promise
 var dataCollected = d3.json(url);
@@ -39,19 +39,18 @@ function manageplot(selectedClick = 0) {
         var sampleList = dataSet.samples;
 
 
-        // *****   Creation of the Dropdown menu   *****
-
-        // Need to test if the dropdown does not already exist or it will append the full list at each selection 
+        // *****   Creation of the Dropdown menu   *****     
         let selector = d3.select("#selDataset");
-        if (document.querySelector('#selDataset').hasChildNodes()==false){
+        if (document.querySelector('#selDataset').hasChildNodes() == false) {              // Need to test if the dropdown does not already exist or it will append the full list at each selection again and again 
             Object.values(nameIdList).map(item => item).forEach(d => {
                 selector.append("option").attr("value", nameIdList.indexOf(d)).text(d); // Based on how the json data is structured (an object containing three arrays),
-            })};                                                                        // the only thing linking the values across the arrays is their position in each array.
-                                                                                        // We will then use the index position (indexValue) as way to select the matched
-                                                                                        // data from the three arrays.
+            })
+        };                                                                        // the only thing linking the values across the arrays is their position in each array.
+        // We will then use the index position (indexValue) as way to select the matched
+        // data from the three arrays.
 
         // *****   Populates the demographic info box based on the menu selection   *****
-        function demographics(indexValue) { 
+        function demographics(indexValue) {
             let listMeta = d3.select(".panel-body");
 
             d3.select("#id").text(`id: ${metadataList[indexValue].id}`);            // use the unique id= to identify the row of html code to be updated.
@@ -61,14 +60,14 @@ function manageplot(selectedClick = 0) {
             d3.select("#location").text(`location: ${metadataList[indexValue].location}`);
             d3.select("#bbtype").text(`bbtype: ${metadataList[indexValue].bbtype}`);
             d3.select("#wfreq").text(`wfreq: ${metadataList[indexValue].wfreq}`);
-            };
+        };
 
 
         // *****   Creation of the all the plots from a single function   *****
 
         function createPlot(indexValue) {
 
-        // Creation of a horizontal bar chart to display the top 10 OTUs found in that individual.
+            // Creation of a horizontal bar chart to display the top 10 OTUs found in that individual.
             // Collection of all the sample data fo the selected individual.
             var newList = [];
             for (var j = 0; j < sampleList[indexValue].sample_values.length; j++)
@@ -79,7 +78,7 @@ function manageplot(selectedClick = 0) {
 
 
             // bar graph creation.
-            trace1 = [{
+            var trace1 = [{
                 y: listTop10.map(object => `OTU ${object.otu_ids}`),
                 x: listTop10.map(object => object.sample_values),
                 text: listTop10.map(object => object.otu_labels),
@@ -87,7 +86,7 @@ function manageplot(selectedClick = 0) {
                 orientation: 'h'
             }];
 
-            let layout = {
+            var layout = {
                 title: `Top Ten Bacteria for Subject ID No:${sampleList[indexValue].id}`,
                 margin: {
                     l: 100,
@@ -102,9 +101,7 @@ function manageplot(selectedClick = 0) {
 
 
             //bubble plot creation
-
-            trace2 = [{
-
+            var trace2 = [{
                 x: newList.map(object => object.otu_ids),
                 y: newList.map(object => object.sample_values),
                 text: newList.map(object => object.otu_labels),
@@ -115,8 +112,8 @@ function manageplot(selectedClick = 0) {
                 }
             }];
 
-            let layout2 = {
-                title: `Bacterial distribution for Subject ID No: ${sampleList[indexValue].id}`,       // to be removed
+            var layout2 = {
+                title: `Bacterial distribution for Subject ID No: ${sampleList[indexValue].id}`,
                 margin: {
                     l: 100,
                     r: 100,
@@ -127,10 +124,6 @@ function manageplot(selectedClick = 0) {
                 xaxis: {
                     title: {
                         text: ' Operational Taxonomic Unit (OTU) ID',
-                        //   font: {
-                        //     family: 'Courier New, monospace',
-                        //     size: 18,
-                        //     color: '#7f7f7f'
                     }
                 }
             };
@@ -140,7 +133,6 @@ function manageplot(selectedClick = 0) {
 
 
             //gauge plot creation
-
             var trace3 = [
                 {
                     domain: { x: [0, 1], y: [0, 1] },
@@ -148,20 +140,22 @@ function manageplot(selectedClick = 0) {
                     title: { text: "Scrubs per Week", font: { size: 16 } },
                     type: "indicator",
                     mode: "gauge",
-                    //   delta: { reference: 380 },
-                    //   text: ['0-1','1-2','2-3','3-4','4-5','5-6','6-7','7-8','8-9'],
-                    //   direction: 'clockwise',
-                    //   textinfo: 'text',
-                    //   textposition: 'inside',
                     gauge: {
                         axis: {
                             range: [null, 9],
-                            showticklabels: false,
+                            showticklabels: true,
+                            dtick: { tick0: 1 },
+                            ticklen: 3,
+
+                            // The following options do not improve the appearance of the plot
+                            // ticks: "inside",        // Also removes the title if set to ""!
                             // tickmode: "array",
-                            // ticks: ""        // Also removes the title!
+                            // ticktext: ['0-1','1-2','2-3','3-4','4-5','5-6','6-7','7-8','8-9'],
+                            // tickvals: [0.5,1.5,2.5,3.5,4.5,5.5,6.5,7.5,8.5]
                         },
+
                         steps: [
-                            { range: [0, 1], color: "#F7F3EC", name: "0-1" },
+                            { range: [0, 1], color: "#F7F3EC" },
                             { range: [1, 2], color: "#F3F1E5" },
                             { range: [2, 3], color: "#E8E6CA" },
                             { range: [3, 4], color: "#E5E8B3" },
@@ -169,13 +163,8 @@ function manageplot(selectedClick = 0) {
                             { range: [5, 6], color: "#BDCC93" },
                             { range: [6, 7], color: "#9DBE89" },
                             { range: [7, 8], color: "#9ABA90" },
-                            { range: [8, 9], color: "#94B38B"  }
+                            { range: [8, 9], color: "#94B38B" }
                         ],
-                        // threshold: {
-                        //   line: { color: "red", width: 4 },
-                        //   thickness: 0.75,
-                        //   value: 490
-                        // }
                     }
                 }
             ];
@@ -186,18 +175,12 @@ function manageplot(selectedClick = 0) {
                     font: {
                         family: 'Verdana',
                         size: 18,
-                        //     color: '#7f7f7f'
                     },
-                    // margin:{pad:600},
                 },
-                // width: 600,
-                // height: 550,
                 margin: { t: 100, b: 0 }
             };
 
             Plotly.newPlot('gauge', trace3, layout3);
-
-
         };
 
 
@@ -206,12 +189,12 @@ function manageplot(selectedClick = 0) {
 
     });
 
-}         // End of the managePlot function
+};         // End of the managePlot function
 
 
 
 
-
+// Function called when the selection on the dropdown menu changes
 manageplot();
 
 
