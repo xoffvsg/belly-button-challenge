@@ -16,7 +16,7 @@ const url = "https://2u-data-curriculum-team.s3.amazonaws.com/dataviz-classroom/
 // listMeta.append("p").text(`id='wfreq'>`);
 
 // var elements = document.getElementsByClassName("panel-body");
-// // elements.insertAdjacentElement('afterend', "<p> id='id' </p>");
+// // elements.insertAdjacentElement('afterend', "<p id="id" style="padding-left: 10px;"></p>");
 // var elem = document.createElement("p");
 // elem.id = 'id';
 // elem.innerHTML = 'Id';
@@ -46,6 +46,7 @@ function manageplot(selectedClick = 0) {
 
         // *****   Creation of the Dropdown menu   *****
 
+        // Need to test if the dropdown does not already exist or it will append the full list at each selection 
         let selector = d3.select("#selDataset");
         Object.values(nameIdList).map(item => item).forEach(d => {
             selector.append("option").attr("value", nameIdList.indexOf(d)).text(d);  // Based on how the json data is structured (a object containing three arrays),
